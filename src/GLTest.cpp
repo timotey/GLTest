@@ -25,7 +25,7 @@ bool changedaspectRatio = 1;
 bool escapestate = false;
 bool escapepressed = false;
 
-auto vpcallback = [](GLFWwindow *window = nullptr, int width,
+auto vpcallback = [](GLFWwindow* window = nullptr, int width,
         int height) -> void
         {
 	        glViewport(0, 0, width, height);
@@ -41,7 +41,7 @@ int main(void)
 	GLFWwindow *window;
 
 	/* Initialize the library */
-	if (!glfwInit())
+	if ( !glfwInit())
 		return -1;
 
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -51,7 +51,7 @@ int main(void)
 	/* Create a windowed mode window and its OpenGL context */
 	window = glfwCreateWindow(initwindowsize.x, initwindowsize.y, "SHS",
 	NULL, NULL);
-	if (!window)
+	if ( !window)
 	{
 		glfwTerminate();
 		return -1;
@@ -96,13 +96,13 @@ int main(void)
 			7,6,4
     };
     //@formatter:on
-	glw::IndexBuffer ib(indices, sizeof(indices) / sizeof(indices[0]));
+	glw::IndexBuffer ib(indices, sizeof (indices) / sizeof (indices[0]));
 
 	glw::VertexBufferLayout layout;
 	layout.push<float>(3);
 	layout.push<float>(2);
 
-	glw::VertexArray vao(glw::VertexBuffer(vertecies, sizeof(vertecies)),
+	glw::VertexArray vao(glw::VertexBuffer(vertecies, sizeof (vertecies)),
 	        layout);
 
 	std::shared_ptr<glw::Program> p = std::make_shared<glw::Program>(
@@ -123,7 +123,9 @@ int main(void)
 		mat.diffuse = glm::vec3(0.4, 0.4, 0.4);
 		mat.specular = glm::vec3(0.774597, 0.774597, 0.774597);
 		mat.shininess = 0.6;
-		model = std::make_shared<glw::Mesh>(std::move(ib), std::move(vao), mat);
+//		model = std::make_shared<glw::Mesh>(std::move(ib), std::move(vao), mat);
+		model = std::make_shared<glw::Mesh>(
+		        glw::make_Mesh("Resource/Meshes/cube.obj"));
 	}
 	{
 		glw::Material mat;
@@ -133,6 +135,7 @@ int main(void)
 		mat.shininess = 0.6;
 		model1 = std::make_shared<glw::Mesh>(
 		        glw::make_Mesh("Resource/Meshes/1.obj"));
+
 	}
 
 	glw::PerspectiveCamera cam(45.0_deg, 0.01f, 1000.0f);
@@ -147,6 +150,7 @@ int main(void)
 	scene->push("monkey", o2);
 
 	model->textures[0] = glw::make_Texture("Resource/Texture/Chrome.jpg");
+	model1->textures[0] = glw::make_Texture("Resource/Texture/Chrome.jpg");
 
 	float phase = 0;
 	glm::dvec2 cursorPos =
@@ -163,21 +167,22 @@ int main(void)
 	glDepthFunc(GL_LESS);
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
-	glFrontFace(GL_CCW);
+	glFrontFace(GL_CW);
 
-	glClearColor(0.2, 0.3, 0.8, 1.0);
+	glClearColor(0.2, 0.2, 0.8, 1.0);
 	glfwSetCursorPos(window, 0, 0);
 	main.cam().setTranslation(glm::fvec3(0.0_m, 0.0_m, 6.0_m));
 	o->setTranslation(glm::fvec3(0.0_m, 0.0_m, -3.0_m));
 	o->setScale(glm::fvec3(3.0_m, 3.0_m, 3.0_m));
 	/* Loop until the user closes the window */
-	while (!glfwWindowShouldClose(window))
+	while ( !glfwWindowShouldClose(window))
 	{
 
 		if (escapestate)
 		{
 			glm::dvec2 mouseDelta;
-			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+			glfwSetInputMode(window, GLFW_CURSOR,
+			GLFW_CURSOR_DISABLED);
 			glfwGetCursorPos(window, &mouseDelta.x, &mouseDelta.y);
 			glfwSetCursorPos(window, 0, 0);
 			constexpr float scalefactor = 500;
@@ -210,7 +215,7 @@ int main(void)
 				main.cam().translate(
 				        glm::perp(
 				                glm::fvec3(
-				                        glm::vec4(-1, 0, 0, 0)
+				                        glm::vec4( -1, 0, 0, 0)
 				                                * glm::mat4_cast(
 				                                        main.cam().getRotation())),
 				                glm::fvec3(0.0f, 1.0f, 0.0f)));
@@ -240,7 +245,8 @@ int main(void)
 				                glm::fvec3(0.0f, 1.0f, 0.0f)));
 		}
 		else
-			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+			glfwSetInputMode(window, GLFW_CURSOR,
+			GLFW_CURSOR_NORMAL);
 
 		if (changedaspectRatio)
 		{
@@ -250,7 +256,7 @@ int main(void)
 
 		if (glfwGetKey(window, GLFW_KEY_ESCAPE))
 		{
-			if (!escapepressed)
+			if ( !escapepressed)
 			{
 				glfwSetCursorPos(window, 0, 0);
 				escapepressed = true;

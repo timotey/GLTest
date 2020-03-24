@@ -31,7 +31,7 @@ void main()
 	vec3 ReflectDir = reflect(-LightDir, g_Normal);
 	
 	vec3 ambient  = vec3(1.0) * u_Material.ambient;
-		vec3 specular = vec3(1.0) * u_Material.specular * pow(max(dot(g_Normal, HalfwayDir), 0.0), u_Material.shininess*4);
+	vec3 specular = vec3(1.0) * u_Material.specular * pow(max(dot(g_Normal, HalfwayDir), 0.0), u_Material.shininess*4);
 	vec3 diffuse  = vec3(1.0) * u_Material.diffuse * max(dot(LightDir, g_Normal), 0.0);
 	color = defTexColor * vec4(diffuse+ambient+specular, 1.0f);
 };
