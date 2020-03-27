@@ -38,7 +38,7 @@ const float a = M_PI;
 
 int main(void)
 {
-	GLFWwindow *window;
+	GLFWwindow* window;
 
 	/* Initialize the library */
 	if ( !glfwInit())
@@ -70,41 +70,6 @@ int main(void)
 
 	glw::utils::glcall(__LINE__, __FILE__, glEnable, GL_BLEND);
 
-	//@formatter:off
-    const float vertecies[] = {
-    		-0.5, -0.5,  0.5, 0.0, 0.0,
-			 0.5,  0.5,  0.5, 1.0, 0.0,
-			 0.5, -0.5,  0.5, 0.0, 1.0,
-			-0.5,  0.5,  0.5, 1.0, 1.0,
-    		-0.5, -0.5, -0.5, 0.0, 0.0,
-			 0.5,  0.5, -0.5, 1.0, 0.0,
-			 0.5, -0.5, -0.5, 0.0, 1.0,
-			-0.5,  0.5, -0.5, 1.0, 1.0
-    };
-    const unsigned int indices[] = {
-    		1,0,2,
-    		1,3,0,
-			5,2,6,
-			1,2,5,
-			3,1,5,
-			3,5,7,
-			3,7,0,
-			0,7,4,
-			0,4,2,
-			2,4,6,
-			5,6,7,
-			7,6,4
-    };
-    //@formatter:on
-	glw::IndexBuffer ib(indices, sizeof (indices) / sizeof (indices[0]));
-
-	glw::VertexBufferLayout layout;
-	layout.push<float>(3);
-	layout.push<float>(2);
-
-	glw::VertexArray vao(glw::VertexBuffer(vertecies, sizeof (vertecies)),
-	        layout);
-
 	std::shared_ptr<glw::Program> p = std::make_shared<glw::Program>(
 	        glw::FragmentShader(
 	                glw::utils::dump("Resource/Shader/fragment.glsl").c_str()),
@@ -123,7 +88,6 @@ int main(void)
 		mat.diffuse = glm::vec3(0.4, 0.4, 0.4);
 		mat.specular = glm::vec3(0.774597, 0.774597, 0.774597);
 		mat.shininess = 0.6;
-//		model = std::make_shared<glw::Mesh>(std::move(ib), std::move(vao), mat);
 		model = std::make_shared<glw::Mesh>(
 		        glw::make_Mesh("Resource/Meshes/cube.obj"));
 	}
@@ -154,7 +118,7 @@ int main(void)
 
 	float phase = 0;
 	glm::dvec2 cursorPos =
-	{ 0, 0 };
+	{0, 0};
 	glm::vec3 position;
 
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
@@ -187,10 +151,10 @@ int main(void)
 			glfwSetCursorPos(window, 0, 0);
 			constexpr float scalefactor = 500;
 			mouseDelta /= glm::dvec2
-			{ scalefactor * aspectRatio, scalefactor };
+			{scalefactor * aspectRatio, scalefactor};
 			mouseDelta =
-			{ std::clamp(mouseDelta.x, -1.0, 1.0), std::clamp(mouseDelta.y,
-			        -1.0, 1.0) };
+			{std::clamp(mouseDelta.x, -1.0, 1.0), std::clamp(mouseDelta.y, -1.0,
+			        1.0)};
 			cursorPos += mouseDelta;
 			cursorPos.y = std::clamp(cursorPos.y, -90.0_deg, 90.0_deg);
 			cursorPos.x = std::fmod(cursorPos.x, 360.0_deg);

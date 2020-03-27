@@ -116,7 +116,7 @@ Mesh make_Mesh(const std::string& filename)
 	        [&verts, &texcoords](
 	                const std::tuple<size_t, size_t, size_t>& val)
 	                {
-		                return std::make_tuple(texcoords[std::get<1>(val)-1], verts[std::get<0>(val)-1] );
+		                return std::make_tuple(texcoords[std::get<1>(val)], verts[std::get<0>(val)-1] );
 	                });
 
 	glw::IndexBuffer a(indices.data(), indices.size());

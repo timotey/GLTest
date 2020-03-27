@@ -43,18 +43,18 @@ protected:
 public:
 	Scene() = default;
 	virtual ~Scene() = default;
-	Scene(const Scene &other) = default;
-	Scene(Scene &&other) = default;
-	Scene& operator=(const Scene &other) = default;
-	Scene& operator=(Scene &&other) = default;
-	void push(const std::string &label, const std::shared_ptr<Object> val);
-	void push(const std::string &label, const std::shared_ptr<glw::Mesh> val);
-	void push(const std::string &label,
+	Scene(const Scene& other) = default;
+	Scene(Scene&& other) = default;
+	Scene& operator=(const Scene& other) = default;
+	Scene& operator=(Scene&& other) = default;
+	void push(const std::string& label, const std::shared_ptr<Object> val);
+	void push(const std::string& label, const std::shared_ptr<glw::Mesh> val);
+	void push(const std::string& label,
 	        const std::shared_ptr<glw::Program> val);
-	void push(const std::string &label, const std::weak_ptr<Object> val);
-	void push(const std::string &label, const std::weak_ptr<glw::Mesh> val);
-	void push(const std::string &label, const std::weak_ptr<glw::Program> val);
-	void pop(const std::string &label);
+	void push(const std::string& label, const std::weak_ptr<Object> val);
+	void push(const std::string& label, const std::weak_ptr<glw::Mesh> val);
+	void push(const std::string& label, const std::weak_ptr<glw::Program> val);
+	void pop(const std::string& label);
 };
 
 } /* namespace glw */
