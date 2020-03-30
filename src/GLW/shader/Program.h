@@ -20,17 +20,54 @@ class Program
 private:
 	unsigned int handle;
 	mutable std::map<std::string, int> uniforms;
+	struct fold_functor
+	{
+		unsigned int& handle;
+		fold_functor operator +(glw::Shader&& s)
+		{
+			return *this;
+		}
+	};
 public:
 	template <typename ... Args>
-	Program(Args &&... args)
+	Program(Args&& ... args)
 			: handle(glw::utils::glcall(__LINE__, __FILE__, glCreateProgram))
 	{
-		//	glw::utils::pcall(__LINE__, __FILE__, glAttachShader, this->handle, size_t(first));
-		this->make(std::forward<Args>(args)...);
+		(glw::utils::glcall(__LINE__, __FILE__, glAttachShader, this->handle,
+						size_t(args)), ...);
+
+		int result;
+		glw::utils::glcall(__LINE__, __FILE__, glLinkProgram, this->handle);
+		glw::utils::glcall(__LINE__, __FILE__, glGetProgramiv, this->handle,
+		GL_LINK_STATUS, &result);
+		if ( !result)
+		{
+			int len = 0;
+			glw::utils::glcall(__LINE__, __FILE__, glGetProgramiv, this->handle,
+			GL_INFO_LOG_LENGTH, &len);
+			char* message = reinterpret_cast<char*>(alloca(len * sizeof(char)));
+			glw::utils::glcall(__LINE__, __FILE__, glGetProgramInfoLog,
+			        this->handle, len, &len, message);
+			std::cout << message << std::endl;
+		}
+		glw::utils::glcall(__LINE__, __FILE__, glValidateProgram, this->handle);
+		glw::utils::glcall(__LINE__, __FILE__, glGetProgramiv, this->handle,
+		GL_VALIDATE_STATUS, &result);
+		if ( !result)
+		{
+			int len = 0;
+			glw::utils::glcall(__LINE__, __FILE__, glGetProgramiv, this->handle,
+			GL_INFO_LOG_LENGTH, &len);
+			char* message = reinterpret_cast<char*>(alloca(len * sizeof(char)));
+			glw::utils::glcall(__LINE__, __FILE__, glGetProgramInfoLog,
+			        this->handle, len, &len, message);
+			std::cout << message << std::endl;
+		}
+
 	}
 	virtual ~Program();
-	Program(Program &&other);
-	Program& operator=(Program &&other);
+	Program(Program&& other);
+	Program& operator=(Program&& other);
 	operator bool() const;
 	operator size_t() const;
 	void bind() const;
@@ -42,51 +79,7 @@ public:
 	void setUniformMatrix(const std::string name,
 	        const glm::mat<y, x, T> value) const;
 private:
-	unsigned int getUniformLocation(std::string) const;
-	void make(glw::Shader &&s)
-	{
-		int result;
-		glw::utils::glcall(__LINE__, __FILE__, glAttachShader, this->handle,
-		        size_t(s));
-		glw::utils::glcall(__LINE__, __FILE__, glLinkProgram, this->handle);
-		glw::utils::glcall(__LINE__, __FILE__, glGetProgramiv, this->handle,
-		GL_LINK_STATUS, &result);
-		if (!result)
-		{
-			int len = 0;
-			glw::utils::glcall(__LINE__, __FILE__, glGetProgramiv, this->handle,
-			GL_INFO_LOG_LENGTH, &len);
-			char *message = reinterpret_cast<char*>(alloca(len * sizeof(char)));
-			glw::utils::glcall(__LINE__, __FILE__, glGetProgramInfoLog,
-			        this->handle, len, &len, message);
-			std::cout << message << std::endl;
-		}
-		glw::utils::glcall(__LINE__, __FILE__, glValidateProgram, this->handle);
-		glw::utils::glcall(__LINE__, __FILE__, glGetProgramiv, this->handle,
-		GL_VALIDATE_STATUS, &result);
-		if (!result)
-		{
-			int len = 0;
-			glw::utils::glcall(__LINE__, __FILE__, glGetProgramiv, this->handle,
-			GL_INFO_LOG_LENGTH, &len);
-			char *message = reinterpret_cast<char*>(alloca(len * sizeof(char)));
-			glw::utils::glcall(__LINE__, __FILE__, glGetProgramInfoLog,
-			        this->handle, len, &len, message);
-			std::cout << message << std::endl;
-		}
-
-		s.~Shader();
-	}
-
-	template <typename ... Args>
-	void make(glw::Shader &&s, Args ... args)
-	{
-		glw::utils::glcall(__LINE__, __FILE__, glAttachShader, this->handle,
-		        size_t(s));
-		this->make(std::forward<Args>(args)...);
-		s.~Shader();
-	}
-
+	unsigned int getUniformLocation(const std::string&) const;
 };
 
 } /* namespace glw */

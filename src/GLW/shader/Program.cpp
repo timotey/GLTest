@@ -34,10 +34,10 @@ namespace glw
 //	s.~shader();
 //}
 
-unsigned int Program::getUniformLocation(std::string name) const
+unsigned int Program::getUniformLocation(const std::string& name) const
 {
 	int location =
-	        (!this->uniforms.count(name)) ?
+	        ( !this->uniforms.count(name)) ?
 	                this->uniforms[name] = glw::utils::glcall(__LINE__,
 	                __FILE__, glGetUniformLocation, this->handle,
 	                        name.c_str()) :
@@ -61,7 +61,7 @@ void Program::bind() const
 {
 	unsigned binding = 0;
 	glw::utils::glcall(__LINE__, __FILE__, glGetIntegerv, GL_CURRENT_PROGRAM,
-	        reinterpret_cast<int*>(&binding)); //check if thing is already bound
+	        reinterpret_cast<int*>( &binding)); //check if thing is already bound
 
 	if (binding != this->handle)
 		glw::utils::glcall(__LINE__, __FILE__, glUseProgram, this->handle);
@@ -144,13 +144,13 @@ void Program::setUniformMatrix<4, 4, float>(const std::string name,
 	        this->getUniformLocation(name), 1, GL_FALSE, glm::value_ptr(value));
 }
 
-Program::Program(Program &&other)
+Program::Program(Program&& other)
 {
 	this->handle = other.handle;
 	other.handle = 0;
 }
 
-Program& Program::operator =(Program &&other)
+Program& Program::operator =(Program&& other)
 {
 	this->handle = other.handle;
 	other.handle = 0;
