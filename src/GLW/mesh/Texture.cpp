@@ -13,9 +13,9 @@ namespace glw
 Texture::Texture(size_t width, size_t height)
 		: size(width, height)
 {
-	glw::utils::glcall(__LINE__, __FILE__, glGenTextures, 1, &this->handle);
+	glw::utils::glcall(__LINE__, __FILE__, glGenTextures, 1, &this->h);
 	glw::utils::glcall(__LINE__, __FILE__, glBindTexture, GL_TEXTURE_2D,
-	        this->handle);
+	        this->h);
 
 	glw::utils::glcall(__LINE__, __FILE__, glTexParameteri, GL_TEXTURE_2D,
 	GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -32,9 +32,9 @@ Texture::Texture(size_t width, size_t height)
 Texture::Texture(glm::uvec2 _size)
 		: size(_size)
 {
-	glw::utils::glcall(__LINE__, __FILE__, glGenTextures, 1, &this->handle);
+	glw::utils::glcall(__LINE__, __FILE__, glGenTextures, 1, &this->h);
 	glw::utils::glcall(__LINE__, __FILE__, glBindTexture, GL_TEXTURE_2D,
-	        this->handle);
+	        this->h);
 
 	glw::utils::glcall(__LINE__, __FILE__, glTexParameteri, GL_TEXTURE_2D,
 	GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -50,23 +50,23 @@ Texture::Texture(glm::uvec2 _size)
 
 Texture::~Texture()
 {
-	glw::utils::glcall(__LINE__, __FILE__, glDeleteTextures, 1, &this->handle);
+	glw::utils::glcall(__LINE__, __FILE__, glDeleteTextures, 1, &this->h);
 }
 
 Texture::Texture(Texture &&other)
 {
 	this->BPP = other.BPP;
 	this->size = other.size;
-	this->handle = other.handle;
-	other.handle = 0;
+	this->h = other.h;
+	other.h = 0;
 }
 
 Texture& Texture::operator =(Texture &&other)
 {
 	this->BPP = other.BPP;
 	this->size = other.size;
-	this->handle = other.handle;
-	other.handle = 0;
+	this->h = other.h;
+	other.h = 0;
 	return *this;
 }
 
@@ -88,7 +88,7 @@ Texture make_Texture(const std::string &file)
 
 void Texture::bind(unsigned int slot) const
 {
-	if (!this->handle)
+	if (!this->h)
 		return;
 	if (slot > GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS - 1)
 		std::cout << std::dec << "no texture slot" << slot << std::endl;
@@ -96,9 +96,9 @@ void Texture::bind(unsigned int slot) const
 	glw::utils::glcall(__LINE__, __FILE__, glActiveTexture, GL_TEXTURE0 + slot);
 	glw::utils::glcall(__LINE__, __FILE__, glGetIntegeri_v,
 	GL_TEXTURE_BINDING_2D, slot, &value);
-	if (this->handle != value)
+	if (this->h != value)
 		glw::utils::glcall(__LINE__, __FILE__, glBindTexture, GL_TEXTURE_2D,
-		        this->handle);
+		        this->h);
 }
 
 void Texture::unbind() const

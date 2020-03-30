@@ -16,44 +16,46 @@
 namespace glw
 {
 
-class Mesh: virtual public IndexBuffer, VertexArray, Material
+class Mesh
 {
 private:
+	IndexBuffer ib;
+	VertexArray vao;
+	Material mat;
 public:
 	std::array<Texture, 32> textures;
-	Mesh(IndexBuffer &&ib, VertexArray &&vao, const Material &mat)
-			:
-			        IndexBuffer(std::move(static_cast<IndexBuffer&>(ib))),
-			        VertexArray(std::move(static_cast<VertexArray&>(vao))),
-			        Material(mat)
+	Mesh(IndexBuffer&& _ib, VertexArray&& _vao, const Material& _mat)
+			: ib(std::move(_ib)), vao(std::move(_vao)), mat(_mat)
 	{
 	}
 	virtual ~Mesh() = default;
-	Mesh(const Mesh &other) = delete;
-	Mesh(Mesh &&other)
+	Mesh(const Mesh& other) = delete;
+	Mesh(Mesh&& other)
 			:
-			        IndexBuffer(std::move(static_cast<IndexBuffer&>(other))),
-			        VertexArray(std::move(static_cast<VertexArray&>(other))),
-			        Material(std::move(static_cast<Material&>(other)))
+			        ib(std::move(other.ib)),
+			        vao(std::move(other.vao)),
+			        mat(std::move(other.mat))
 	{
 	}
-	Mesh& operator=(const Mesh &other) = delete;
-	Mesh& operator=(Mesh &&other)
+	Mesh& operator=(const Mesh& other) = delete;
+	Mesh& operator=(Mesh&& other)
 	{
-		this->IndexBuffer::operator =(
-		        std::move(static_cast<IndexBuffer&>(other)));
-		this->VertexArray::operator =(
-		        std::move(static_cast<VertexArray&>(other)));
-		this->Material::operator =(std::move(static_cast<Material&>(other)));
+		this->ib.operator =(std::move(other.ib));
+		this->vao.operator =(std::move(other.vao));
+		this->mat.operator =(std::move(other.mat));
 		return *this;
 	}
-	virtual void bind(const Program &shader) const override
+	void bind(const Program& shader) const
 	{
-		this->Material::bind(shader);
-		this->VertexArray::bind();
-		this->IndexBuffer::bind();
+		this->mat.bind(shader);
+		this->vao.bind();
+		this->ib.bind();
 		for (unsigned int i = 0; i < 32; i++)
 			this->textures[i].bind(i);
+	}
+	unsigned count() const
+	{
+		return this->ib.getCount();
 	}
 };
 

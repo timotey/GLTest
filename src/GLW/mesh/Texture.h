@@ -18,23 +18,28 @@ namespace glw
 
 class Texture
 {
-protected:
-	unsigned int handle = 0;
+private:
+	unsigned int h = 0;
 	glm::uvec2 size;
 	int BPP = 0;
+protected:
+	unsigned int handle()
+	{
+		return this->h;
+	}
 public:
-	Texture(size_t width, size_t height);
-	Texture(glm::uvec2 _size = glm::uvec2());
+	explicit Texture(size_t width, size_t height);
+	explicit Texture(glm::uvec2 _size = glm::uvec2());
 	virtual ~Texture();
-	Texture(const Texture &other) = delete;
-	Texture(Texture &&other);
-	Texture& operator=(const Texture &other) = delete;
-	Texture& operator=(Texture &&other);
-	friend Texture make_Texture(const std::string &file);
+	Texture(const Texture& other) = delete;
+	Texture(Texture&& other);
+	Texture& operator=(const Texture& other) = delete;
+	Texture& operator=(Texture&& other);
+	friend Texture make_Texture(const std::string& file);
 	void bind(unsigned int slot) const;
 	void unbind() const;
 };
-Texture make_Texture(const std::string &file);
+Texture make_Texture(const std::string& file);
 
 } /* namespace glw */
 

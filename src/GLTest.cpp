@@ -80,8 +80,11 @@ int main(void)
 
 	std::shared_ptr<glw::Mesh> model;
 	std::shared_ptr<glw::Mesh> model1;
+	std::shared_ptr<glw::Mesh> model2;
 	std::shared_ptr<glw::Object> o = std::make_shared<glw::Object>();
 	std::shared_ptr<glw::Object> o2 = std::make_shared<glw::Object>();
+	std::shared_ptr<glw::Object> o3 = std::make_shared<glw::Object>(
+	        glm::vec3(0, 0, 5));
 	{
 		glw::Material mat;
 		mat.ambient = glm::vec3(0.25, 0.25, 0.25);
@@ -101,24 +104,37 @@ int main(void)
 		        glw::make_Mesh("Resource/Meshes/1.obj"));
 
 	}
+	{
+		glw::Material mat;
+		mat.ambient = glm::vec3(0.25, 0.25, 0.25);
+		mat.diffuse = glm::vec3(0.4, 0.4, 0.4);
+		mat.specular = glm::vec3(0.774597, 0.774597, 0.774597);
+		mat.shininess = 0.6;
+		model2 = std::make_shared<glw::Mesh>(
+		        glw::make_Mesh("Resource/Meshes/quad.obj"));
+
+	}
 
 	glw::PerspectiveCamera cam(45.0_deg, 0.01f, 1000.0f);
 	std::shared_ptr<glw::Scene> scene = std::make_shared<glw::Scene>();
 
 	glw::Renderer main(cam, scene);
-	scene->push("Quad", model);
+	scene->push("Cube", model);
+	scene->push("Quad", model2);
 	scene->push("monkey", model1);
+	scene->push("Cube", p);
 	scene->push("Quad", p);
 	scene->push("monkey", p);
-	scene->push("Quad", o);
+	scene->push("Cube", o);
+	scene->push("Quad", o3);
 	scene->push("monkey", o2);
 
 	model->textures[0] = glw::make_Texture("Resource/Texture/Chrome.jpg");
 	model1->textures[0] = glw::make_Texture("Resource/Texture/Chrome.jpg");
+	model2->textures[0] = glw::make_Texture("Resource/Texture/Chrome.jpg");
 
 	float phase = 0;
-	glm::dvec2 cursorPos =
-	{0, 0};
+	glm::dvec2 cursorPos(0, 0);
 	glm::vec3 position;
 
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);

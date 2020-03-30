@@ -15,17 +15,17 @@ namespace glw
 
 class IndexBuffer
 {
-protected:
+private:
 	unsigned int handle = 0;
 	size_t count = 0;
 public:
 	IndexBuffer();
 	IndexBuffer(const unsigned int* data, const size_t count);
 	virtual ~IndexBuffer();
-	IndexBuffer(const IndexBuffer &other) = delete;
-	IndexBuffer(IndexBuffer &&other);
-	IndexBuffer& operator=(const IndexBuffer &other) = delete;
-	IndexBuffer& operator=(IndexBuffer &&other);
+	IndexBuffer(const IndexBuffer& other) = delete;
+	IndexBuffer(IndexBuffer&& other);
+	IndexBuffer& operator=(const IndexBuffer& other) = delete;
+	IndexBuffer& operator=(IndexBuffer&& other);
 	void setData(const unsigned int* data, const size_t count);
 	virtual void bind() const;
 	void unbind() const;

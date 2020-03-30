@@ -33,7 +33,7 @@ Mesh make_Mesh(const std::string& filename)
 {
 
 	regex vertex("v (-?\\d+\\.\\d+) (-?\\d+\\.\\d+) (-?\\d+\\.\\d+)");
-	regex texture("vt (0\\.\\d+) (0\\.\\d+)(?: (\\d+))?");
+	regex texture("vt ((?:0|1)\\.\\d+) ((?:0|1)\\.\\d+)");
 	regex normal("vn (-?\\d+\\.\\d+) (-?\\d+\\.\\d+) (-?\\d+\\.\\d+)");
 	regex face(
 	        "f (\\d+)(?:\\/(\\d+)?)?(?:\\/(\\d+)?)? (\\d+)(?:\\/(\\d+)?)?(?:\\/(\\d+)?)? (\\d+)(?:\\/(\\d+)?)?(?:\\/(\\d+)?)?");
@@ -116,7 +116,7 @@ Mesh make_Mesh(const std::string& filename)
 	        [&verts, &texcoords](
 	                const std::tuple<size_t, size_t, size_t>& val)
 	                {
-		                return std::make_tuple(texcoords[std::get<1>(val)], verts[std::get<0>(val)-1] );
+		                return std::make_tuple(texcoords[std::get<1>(val)-1], verts[std::get<0>(val)-1] );
 	                });
 
 	glw::IndexBuffer a(indices.data(), indices.size());

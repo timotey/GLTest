@@ -71,25 +71,25 @@ namespace glw
 //	this->models.erase(key);
 //}
 
-glw::Renderer::Renderer(const Camera &cam, const std::weak_ptr<Scene> &sc)
+glw::Renderer::Renderer(const Camera& cam, const std::weak_ptr<Scene>& sc)
 {
 	this->camera = std::unique_ptr<Camera>(cam.self_clone());
 	this->scene = sc;
 }
 
-glw::Renderer::Renderer(const Camera &cam, const std::shared_ptr<Scene> &sc)
+glw::Renderer::Renderer(const Camera& cam, const std::shared_ptr<Scene>& sc)
 {
 	this->camera = std::unique_ptr<Camera>(cam.self_clone());
 	this->scene = sc;
 }
 
-glw::Renderer::Renderer(const Renderer &other)
+glw::Renderer::Renderer(const Renderer& other)
 {
 	this->camera = std::unique_ptr<Camera>(other.camera->self_clone());
 	this->scene = other.scene;
 }
 
-Renderer& glw::Renderer::operator =(const Renderer &other)
+Renderer& glw::Renderer::operator =(const Renderer& other)
 {
 	this->camera = std::unique_ptr<Camera>(other.camera->self_clone());
 	this->scene = other.scene;
@@ -100,7 +100,7 @@ void glw::Renderer::render()
 {
 	if (this->scene.expired())
 		return;
-	Scene &scene = *this->scene.lock().get();
+	Scene& scene = *this->scene.lock().get();
 	auto vp = this->camera->getCameraMat() * this->camera->getTransformMat();
 	for (auto target : scene.genTargets())
 	{
@@ -108,14 +108,14 @@ void glw::Renderer::render()
 		target.prog->setUniform<3, float>("u_LightPos", glm::vec3(0, 3, 3));
 		target.prog->setUniform<3, float>("u_CameraPos",
 		        this->cam().getTranslation());
-		target.mesh->bind(*target.prog.get());
-		for (auto &object : target.obj)
+		target.mesh->bind( *target.prog.get());
+		for (auto& object : target.obj)
 		{
 			target.prog->setUniformMatrix<4, 4>("MVP",
 			        vp * object->getTransformMat());
 			target.prog->setUniformMatrix<4, 4>("M", object->getTransformMat());
 			glw::utils::glcall(__LINE__, __FILE__, glDrawElements, GL_TRIANGLES,
-			        target.mesh->getCount(), GL_UNSIGNED_INT, nullptr);
+			        target.mesh->count(), GL_UNSIGNED_INT, nullptr);
 		}
 	}
 }
