@@ -17,52 +17,26 @@ namespace utils
 {
 
 template <typename T>
-constexpr GLenum glGetEnum();
+constexpr GLenum glEnum = 0;
 
-template<>
-constexpr GLenum glGetEnum<float>()
-{
-	return GL_FLOAT;
+template <>
+constexpr GLenum glEnum<float> = GL_FLOAT;
+template <>
+constexpr GLenum glEnum<unsigned int> = GL_UNSIGNED_INT;
+template <>
+constexpr GLenum glEnum<int> = GL_INT;
+template <>
+constexpr GLenum glEnum<unsigned short> = GL_UNSIGNED_SHORT;
+template <>
+constexpr GLenum glEnum<short> = GL_SHORT;
+template <>
+constexpr GLenum glEnum<unsigned char> = GL_UNSIGNED_BYTE;
+template <>
+constexpr GLenum glEnum<char> = GL_BYTE;
+
 }
+// namespace utils
 
-template<>
-constexpr GLenum glGetEnum<unsigned int>()
-{
-	return GL_UNSIGNED_INT;
-}
-
-template<>
-constexpr GLenum glGetEnum<int>()
-{
-	return GL_INT;
-}
-
-template<>
-constexpr GLenum glGetEnum<unsigned short>()
-{
-	return GL_UNSIGNED_SHORT;
-}
-
-template<>
-constexpr GLenum glGetEnum<short>()
-{
-	return GL_SHORT;
-}
-
-template<>
-constexpr GLenum glGetEnum<unsigned char>()
-{
-	return GL_UNSIGNED_BYTE;
-}
-
-template<>
-constexpr GLenum glGetEnum<char>()
-{
-	return GL_BYTE;
-}
-
-}  // namespace utils
-
-}  // namespace glw
+}// namespace glw
 
 #endif /* GLW_UTILS_GLTYPE_HPP_ */

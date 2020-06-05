@@ -3,3 +3,5 @@ Release/*
 .cproject
 .project
 .settings
+.vimrc
+.clang-complete

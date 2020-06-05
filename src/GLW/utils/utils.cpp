@@ -16,7 +16,7 @@ std::string dump(const std::string filename)
 {
 	std::ifstream file(filename);
 	if (!file)
-		return "invalid filepath";
+		return "";
 	file.seekg(0, std::ios::end);
 	auto length = file.tellg();
 	file.seekg(0, std::ios::beg);

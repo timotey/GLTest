@@ -4,7 +4,7 @@
  *  Created on: Mar 30, 2020
  *      Author: timotey
  */
-
+#ifdef asdadsasd
 #include "Context.h"
 
 namespace glw
@@ -38,3 +38,4 @@ Context::Context(GLVersion v, unsigned w, unsigned h)
 }
 
 } /* namespace obj */
+#endif

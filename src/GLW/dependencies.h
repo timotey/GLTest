@@ -5,6 +5,7 @@
  *      Author: timotey
  */
 
+
 #ifndef GLW_DEPENDENCIES_H_
 #define GLW_DEPENDENCIES_H_
 
@@ -16,6 +17,7 @@
 #include <vector>
 #include <array>
 #include <map>
+#include <unordered_map>
 #include <tuple>
 #include <numeric>
 #include <utility>
