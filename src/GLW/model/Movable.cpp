@@ -10,9 +10,11 @@
 namespace glw
 {
 
-glw::Movable::Movable(glm::vec3 position, glm::quat rotation, glm::vec3 scale) :translation(position), rotation(rotation), scale(scale)
+glw::Movable::Movable(glm::vec3 position, glm::quat rotation, glm::vec3 scale) :
+		translation(position),
+		rotation(rotation),
+		scale(scale)
 {
-
 }
 
 glm::mat4 glw::Movable::getTransformMat() const
@@ -29,7 +31,7 @@ const glm::fvec3& glw::Movable::getTranslation() const
 	return translation;
 }
 
-void glw::Movable::setTranslation(const glm::vec3 &position)
+void glw::Movable::setTranslation(const glm::vec3& position)
 {
 	this->translation = position;
 }
@@ -39,7 +41,7 @@ const glm::fquat& glw::Movable::getRotation() const
 	return rotation;
 }
 
-void glw::Movable::setRotation(const glm::quat &rotation)
+void glw::Movable::setRotation(const glm::quat& rotation)
 {
 	this->rotation = rotation;
 }
@@ -49,17 +51,25 @@ const glm::fvec3& glw::Movable::getScale() const
 	return scale;
 }
 
-void glw::Movable::setScale(const glm::vec3 &scale)
+void glw::Movable::setScale(const glm::vec3& scale)
 {
 	this->scale = scale;
 }
 
-void Movable::translate(const glm::vec3 &position)
+template <>
+void Movable::translate<translation_mode::absl>(const glm::vec3& position)
 {
-	this->translation+=position;
+	this->translation += position;
 }
 
-void Movable::rotate(const glm::quat &rotation)
+template <>
+void Movable::translate<translation_mode::rel>(const glm::vec3& position)
+{
+	this->translation += glm::vec3(
+	        glm::vec4(position, 0.0) * this->getTransformMat());
+}
+
+void Movable::rotate(const glm::quat& rotation)
 {
 	this->rotation *= rotation;
 }
