@@ -12,6 +12,10 @@
 namespace glw
 {
 
+///
+///@brief a class that encapsulates all the necessary buffers for deferred rendering
+///
+
 class GBuffer
 {
 	Framebuffer f;
@@ -20,12 +24,22 @@ class GBuffer
 	Texture2 norm;
 	Texture2 depth;
 public:
+	///
+	///@brief the constuctor
+	///
+	///@param size the size of the framebuffer
+	///
 	GBuffer(glm::vec2 size);
 	virtual ~GBuffer() = default;
 	GBuffer(const GBuffer& other) = delete;
 	GBuffer(GBuffer&& other) = default;
 	GBuffer& operator=(const GBuffer& other) = delete;
 	GBuffer& operator=(GBuffer&& other) = default;
+	///
+	///@brief binds the framebuffer for read or draw
+	///
+	///@param target specifies bind mode
+	///
 	void bind(Framebuffer::target target)
 	{
 		if (target != Framebuffer::read)
@@ -37,6 +51,10 @@ public:
 			this->norm.bind(2);
 		}
 	}
+
+	///
+	///@brief unbinds the framebuffer, for debug only
+	///
 	void unbind()
 	{
 		this->f.unbind();

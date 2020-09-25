@@ -14,6 +14,9 @@
 namespace glw
 {
 
+///
+///@brief enum which describes OpenGL buffer type
+///
 enum class buffer_type : GLenum
 {
 	vertex = GL_ARRAY_BUFFER,
@@ -21,19 +24,48 @@ enum class buffer_type : GLenum
 	uniform = GL_UNIFORM_BUFFER
 };
 
-template <buffer_type>
-GLenum binding_conversion;
-template <>
-GLenum binding_conversion<buffer_type::index> = GL_INDEX_ARRAY_BUFFER_BINDING;
-template <>
-GLenum binding_conversion<buffer_type::vertex> = GL_ARRAY_BUFFER_BINDING;
-template <>
-GLenum binding_conversion<buffer_type::uniform> = GL_UNIFORM_BUFFER_BINDING;
+template<class... Ts>
+class buffer_struct_type;
 
-template <buffer_type T>
+template<class T, class... Ts>
+class buffer_struct_type<T, Ts...>
+{
+	T value;
+
+};
+
+///
+///@brief adapter from OpenGL macro definition to templated constant
+///
+///@tparam buffer_type 
+///
+///@return buffer binding constant corresponding to the buffer type
+///
+template <buffer_type>
+constexpr GLenum binding_conversion;
+template <>
+constexpr GLenum binding_conversion<buffer_type::index> = GL_INDEX_ARRAY_BUFFER_BINDING;
+template <>
+constexpr GLenum binding_conversion<buffer_type::vertex> = GL_ARRAY_BUFFER_BINDING;
+template <>
+constexpr GLenum binding_conversion<buffer_type::uniform> = GL_UNIFORM_BUFFER_BINDING;
+
+///
+///@brief abstraction for OpenGL Buffer Object
+///
+///@details a class which represents and does resource management for OpenGL Buffer Object
+///
+///@tparam type specifies which type of buffer needs to be created
+///
+template <buffer_type type>
 class Buffer
 {
 public:
+	///
+	///@brief adapter for OpenGL buffer usage hints
+	///
+	///@details enum which provides type-safe wrapper for default OpenGL macro definitions for buffer usage hints
+	///
 	enum class mode : GLenum
 	{
 		stream_draw = GL_STREAM_DRAW,
@@ -46,53 +78,12 @@ public:
 		dynamic_read = GL_DYNAMIC_READ,
 		dynamic_copy = GL_DYNAMIC_COPY,
 	};
-	Buffer(mode _m) :
-			m(_m)
-	{
-		glw::utils::glcall(__LINE__, __FILE__, glGenBuffers, 1,
-		        &reinterpret_cast<unsigned&>(this->handle));
-	}
-	Buffer(const void* data, const size_t size)
-	{
-		glw::utils::glcall(__LINE__, __FILE__, glGenBuffers, 1,
-		        &reinterpret_cast<unsigned&>(this->handle));
-		this->setData(data, size);
-	}
-	Buffer(Buffer&& other)
-	{
-		this->handle = other.handle;
-		this->m = other.m;
-		other.handle = 0;
-	}
-	Buffer& operator=(Buffer&& other)
-	{
-		glw::utils::glcall(__LINE__, __FILE__, glDeleteBuffers, 1,
-		        &reinterpret_cast<unsigned&>(this->handle));
-		this->handle = other.handle;
-		other.handle = 0;
-		this->m = other.m;
-		return *this;
-	}
-	~Buffer()
-	{
-		glw::utils::glcall(__LINE__, __FILE__, glDeleteBuffers, 1,
-		        &reinterpret_cast<unsigned&>(this->handle));
-	}
-
-	void setData(const void* data, const size_t size)
-	{
-		Buffer::Buffer_guard g;
-		this->bind();
-		glw::utils::lglcall(__LINE__, __FILE__, [&]()
-		{	glBufferData( GLenum(T), size, data,
-					GLenum(this->m));});
-	}
-	void bind() const
-	{
-		glw::utils::lglcall(__LINE__, __FILE__, [&]()
-		{	glBindBuffer(GLenum(T), this->handle);});
-	}
 private:
+	///
+	///@brief a helper class to prevent unexpected OpenGL state changes related to buffer bindings
+	///
+	///@details this class remembers current bound buffer on construction and restores it on destuction
+	///
 	class Buffer_guard
 	{
 	public:
@@ -101,17 +92,77 @@ private:
 				h(0)
 		{
 			glw::utils::glcall(__LINE__, __FILE__, glGetIntegerv,
-			        binding_conversion<T>, &this->h);
+			        binding_conversion<type>, &this->h);
 		}
 		~Buffer_guard()
 		{
 			glw::utils::lglcall(__LINE__, __FILE__, [&]()
-			{	glBindBuffer(GLenum(T), this->h);});
+			{	glBindBuffer(GLenum(type), this->h);});
 		}
 	};
 	int handle;
 	mode m;
 };
+
+template <buffer_type type>
+Buffer::Buffer(mode _m) :
+		m(_m)
+{
+	glw::utils::glcall(__LINE__, __FILE__, glGenBuffers, 1,
+	        &reinterpret_cast<unsigned&>(this->handle));
+}
+
+template <buffer_type type>
+Buffer::Buffer(mode _m, const void* data, const size_t size):
+	m(_m)
+{
+	glw::utils::glcall(__LINE__, __FILE__, glGenBuffers, 1,
+	        &reinterpret_cast<unsigned&>(this->handle));
+	this->setData(data, size);
+}
+
+template <buffer_type type>
+Buffer::Buffer(Buffer&& other)
+{
+	this->handle = other.handle;
+	this->m = other.m;
+	other.handle = 0;
+}
+
+template <buffer_type type>
+Buffer::Buffer& operator=(Buffer&& other)
+{
+	glw::utils::glcall(__LINE__, __FILE__, glDeleteBuffers, 1,
+	        &reinterpret_cast<unsigned&>(this->handle));
+	this->handle = other.handle;
+	other.handle = 0;
+	this->m = other.m;
+	return *this;
+}
+
+template <buffer_type type>
+Buffer::~Buffer()
+{
+	glw::utils::glcall(__LINE__, __FILE__, glDeleteBuffers, 1,
+	        &reinterpret_cast<unsigned&>(this->handle));
+}
+
+template <buffer_type type>
+void Buffer::setData(const void* data, const size_t size)
+{
+	Buffer::Buffer_guard g;
+	this->bind();
+	glw::utils::lglcall(__LINE__, __FILE__, [&]()
+	{	glBufferData( GLenum(type), size, data,
+				GLenum(this->m));});
+}
+
+template <buffer_type type>
+void Buffer::bind() const
+{
+	glw::utils::lglcall(__LINE__, __FILE__, [&]()
+	{	glBindBuffer(GLenum(type), this->handle);});
+}
 
 extern template class Buffer<buffer_type::uniform> ;
 extern template class Buffer<buffer_type::vertex> ;

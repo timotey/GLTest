@@ -13,6 +13,10 @@
 namespace glw
 {
 
+///
+///@brief base class for game lights
+///
+
 class Light: public Movable
 {
 protected:

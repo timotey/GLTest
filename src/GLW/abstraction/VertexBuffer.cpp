@@ -6,7 +6,7 @@
  */
 
 #include "../abstraction/VertexBuffer.h"
-
+#ifdef DONT_DEFINE_THIS_
 namespace glw
 {
 
@@ -67,3 +67,4 @@ VertexBuffer& VertexBuffer::operator =(VertexBuffer&& other)
 }
 
 } /* namespace glw */
+#endif

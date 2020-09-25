@@ -14,6 +14,10 @@
 namespace glw
 {
 
+///
+///@brief The opengl framebuffer abstraction
+///
+
 class Framebuffer
 {
 private:
@@ -32,12 +36,37 @@ public:
 		depth = GL_DEPTH_ATTACHMENT,
 		depth_stencil = GL_DEPTH_STENCIL_ATTACHMENT,
 	};
+	///
+	///@brief a function to obtain a handle of underlying opengl FBO
+	///
+	///@return handle of opengl FBO
+	///
+	///@retval 0 no resource attached
+	///
 	unsigned handle() const
 	{
 		return h;
 	}
+
+	///
+	///@brief function to bind FBO for reading or drawing
+	///
+	///@param[in] target specifies the operation (reading, drawing, both)
+	///
+
 	void bind(target) const;
+
+	///
+	///@brief function to unbind the current FBO and bind the default one (for debugging)
+	///
 	void unbind() const;
+
+	///
+	///@brief function to attach a texture to non-color attachment slot
+	///
+	///@param[in] target specifies the operation (reading, drawing, both)
+	///@param[in]  specifies the operation (reading, drawing, both)
+	///
 	void attach(target, attachment, Texture2 const&);
 	void attach(target, size_t, Texture2 const&);
 	Framebuffer();

@@ -5,6 +5,10 @@
  *      Author: timotey
  */
 
+
+#include "Buffer.h"
+
+#define GLW_ABSTRACTION_INDEXBUFFER_H_
 #ifndef GLW_ABSTRACTION_INDEXBUFFER_H_
 #define GLW_ABSTRACTION_INDEXBUFFER_H_
 

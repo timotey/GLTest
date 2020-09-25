@@ -5,6 +5,7 @@
  *      Author: timotey
  */
 
+#define GLW_ABSTRACTION_VERTEXBUFFER_H_
 #ifndef GLW_ABSTRACTION_VERTEXBUFFER_H_
 #define GLW_ABSTRACTION_VERTEXBUFFER_H_
 

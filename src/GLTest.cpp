@@ -106,7 +106,7 @@ int main(void)
 	glw::PerspectiveCamera c(45.0_deg);
 	c.setAspectRatio(aspectRatio);
 	c.setTranslation({0, 0, 3});
-	std::array<glw::Object, 30000> o;
+	std::array<glw::Object, 3000> o;
 	for (size_t i = 0; i < o.size(); ++i)
 		o[i] = {glm::vec3{std::sin(i * pi * 2 / o.size()) * ampl, std::cos(
 		        i * pi * 2 / o.size()) * ampl, 0}};

@@ -8,7 +8,7 @@
 #ifndef GLW_MODEL_TEXTURE_H_
 #define GLW_MODEL_TEXTURE_H_
 
-#include "../abstraction/Material.h"
+//#include "../abstraction/Material.h"
 #include "../dependencies.h"
 #include "../vendor/stb_image.h"
 #include "../utils/utils.hpp"

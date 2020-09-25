@@ -13,6 +13,10 @@
 namespace glw
 {
 
+///
+///@brief base class for game camera
+///
+
 class Camera: public virtual Movable
 {
 	friend class Renderer;
