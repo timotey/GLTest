@@ -13,7 +13,7 @@ uniform mat4 u_V;
 void main()
 {
 	vec3 texnorm = vec3(texture(u_norm, texCoord));
-	vec3 norm = texnorm != 0 ? normalize((texnorm-vec3(0.5))*2): vec3(0);
+	vec3 norm = texnorm != vec3(0) ? normalize((texnorm-vec3(0.5))*2): vec3(0);
 	vec4 alb = texture(u_alb, texCoord);
 	if(norm == vec3(0))
 		discard;

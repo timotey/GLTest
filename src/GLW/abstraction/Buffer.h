@@ -78,6 +78,69 @@ public:
 		dynamic_read = GL_DYNAMIC_READ,
 		dynamic_copy = GL_DYNAMIC_COPY,
 	};
+
+    Buffer(mode _m) :
+            m(_m)
+    {
+        glw::utils::glcall(__LINE__, __FILE__, glGenBuffers, 1,
+                &reinterpret_cast<unsigned&>(this->handle));
+    }
+
+    Buffer(const void* data, const size_t size, mode _m = mode::dynamic_draw):
+        m(_m), _size(size)
+    {
+        glw::utils::glcall(__LINE__, __FILE__, glGenBuffers, 1,
+                &reinterpret_cast<unsigned&>(this->handle));
+        this->setData(data, size);
+    }
+
+    Buffer(Buffer&& other)
+    {
+        this->handle = other.handle;
+        this->_size = other._size;
+        this->m = other.m;
+        other.handle = 0;
+    }
+
+    Buffer& operator=(Buffer&& other)
+    {
+        glw::utils::glcall(__LINE__, __FILE__, glDeleteBuffers, 1,
+                &reinterpret_cast<unsigned&>(this->handle));
+        this->handle = other.handle;
+        other.handle = 0;
+        this->m = other.m;
+        this->_size = other._size;
+        return *this;
+    }
+
+    Buffer()
+    {
+        glw::utils::glcall(__LINE__, __FILE__, glDeleteBuffers, 1,
+                &reinterpret_cast<unsigned&>(this->handle));
+    }
+    size_t getSize() const {
+        return _size;
+    }
+    void setData(const void* data, const size_t size)
+    {
+        Buffer::Buffer_guard g;
+        this->bind();
+        glw::utils::lglcall(__LINE__, __FILE__, [&]()
+        {	glBufferData( GLenum(type), size, data,
+                    GLenum(this->m));});
+        _size = size;
+    }
+
+    void bind() const
+    {
+        glw::utils::lglcall(__LINE__, __FILE__, [&]()
+        {	glBindBuffer(GLenum(type), this->handle);});
+    }
+    void unbind() const
+    {
+        glw::utils::lglcall(__LINE__, __FILE__, [&]()
+        {	glBindBuffer(GLenum(type), 0);});
+    }
 private:
 	///
 	///@brief a helper class to prevent unexpected OpenGL state changes related to buffer bindings
@@ -102,67 +165,9 @@ private:
 	};
 	int handle;
 	mode m;
+    size_t _size = 0;
 };
 
-template <buffer_type type>
-Buffer::Buffer(mode _m) :
-		m(_m)
-{
-	glw::utils::glcall(__LINE__, __FILE__, glGenBuffers, 1,
-	        &reinterpret_cast<unsigned&>(this->handle));
-}
-
-template <buffer_type type>
-Buffer::Buffer(mode _m, const void* data, const size_t size):
-	m(_m)
-{
-	glw::utils::glcall(__LINE__, __FILE__, glGenBuffers, 1,
-	        &reinterpret_cast<unsigned&>(this->handle));
-	this->setData(data, size);
-}
-
-template <buffer_type type>
-Buffer::Buffer(Buffer&& other)
-{
-	this->handle = other.handle;
-	this->m = other.m;
-	other.handle = 0;
-}
-
-template <buffer_type type>
-Buffer::Buffer& operator=(Buffer&& other)
-{
-	glw::utils::glcall(__LINE__, __FILE__, glDeleteBuffers, 1,
-	        &reinterpret_cast<unsigned&>(this->handle));
-	this->handle = other.handle;
-	other.handle = 0;
-	this->m = other.m;
-	return *this;
-}
-
-template <buffer_type type>
-Buffer::~Buffer()
-{
-	glw::utils::glcall(__LINE__, __FILE__, glDeleteBuffers, 1,
-	        &reinterpret_cast<unsigned&>(this->handle));
-}
-
-template <buffer_type type>
-void Buffer::setData(const void* data, const size_t size)
-{
-	Buffer::Buffer_guard g;
-	this->bind();
-	glw::utils::lglcall(__LINE__, __FILE__, [&]()
-	{	glBufferData( GLenum(type), size, data,
-				GLenum(this->m));});
-}
-
-template <buffer_type type>
-void Buffer::bind() const
-{
-	glw::utils::lglcall(__LINE__, __FILE__, [&]()
-	{	glBindBuffer(GLenum(type), this->handle);});
-}
 
 extern template class Buffer<buffer_type::uniform> ;
 extern template class Buffer<buffer_type::vertex> ;

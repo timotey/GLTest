@@ -15,7 +15,7 @@ Model::Model(VertexArray&& _vao, Texture2&& _tex) :
 		tex(std::move(_tex)),
 		vao(std::move(_vao))
 {
-	this->vao.vb.push_back(VertexBuffer(GL_DYNAMIC_DRAW));
+	this->vao.vb.push_back(VertexBuffer(VertexBuffer::mode::dynamic_draw));
 	this->vao.layout.push<float>(4, 1, 1);
 	this->vao.layout.push<float>(4, 1, 1);
 	this->vao.layout.push<float>(4, 1, 1);

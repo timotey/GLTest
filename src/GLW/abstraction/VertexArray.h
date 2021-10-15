@@ -33,7 +33,7 @@ public:
 	void unbind() const;
 	inline auto getCount() const
 	{
-		return this->ib.getCount();
+		return this->ib.getSize()/sizeof(unsigned int);
 	}
 };
 

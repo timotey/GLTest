@@ -6,7 +6,7 @@
  */
 
 #include "../abstraction/IndexBuffer.h"
-
+#if 0
 namespace glw
 {
 
@@ -60,4 +60,4 @@ void IndexBuffer::unbind() const
 }
 
 } /* namespace glw */
-
+#endif

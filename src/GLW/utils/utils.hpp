@@ -32,6 +32,9 @@ typename std::result_of_t<Function(Args...)> glcall(const unsigned line,
 	{
 		std::cerr << "At line " << std::dec << std::setfill(' ') << std::setw(6)
 		        << line << " in file " << file << std::endl;
+        std::cerr << "With args: ";
+        ([&]{std::cerr << a << ", ";}(),...);
+        std ::cerr << "\n";
 
 		do
 		{
@@ -87,6 +90,9 @@ typename std::result_of_t<Function(Args...)> glcall(const unsigned line,
 	{
 		std::cerr << "At line " << std::dec << std::setfill(' ') << std::setw(6)
 		        << line << " in file " << file << std::endl;
+        std::cerr << "With args: ";
+        ([&]{std::cerr << a << ", ";}(),...);
+        std::cerr << "\n";
 
 		do
 		{

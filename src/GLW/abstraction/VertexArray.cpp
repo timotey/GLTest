@@ -119,7 +119,7 @@ glw::VertexArray make_vao(std::string const& filename)
 		        {	verts[val[0]-1], texcoords[val[1]-1]};
 	        });
 
-	glw::IndexBuffer a(indices.data(), indices.size());
+	glw::IndexBuffer a(indices.data(), indices.size()*sizeof(unsigned int));
 	glw::VertexBuffer b(outvertecies.data(),
 	        outvertecies.size() * sizeof(Vertex));
 	glw::VertexArray c(std::move(a), std::move(b), l);
